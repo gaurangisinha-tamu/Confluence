@@ -21,15 +21,18 @@ def parse_args():
 
 
 if __name__ == '__main__':
+    print("started main")
     args = parse_args()
-    config['save_path'] = config['save_path'] + '/' + config['source_domain'] + '_' + config['target_domain']
+    config['save_path'] = config['source_domain'] + '_' + config['target_domain']
     if not os.path.exists(config['save_path']):
         os.makedirs(config['save_path'])
         print(f"Directory created: {config['save_path']}")
     else:
         print(f"Directory already exists: {config['save_path']}")
 
+    print("Loading data...")
     dg = DataGeneration(
+        config,
         source_domain_name=config['source_domain'],
         target_domain_name=config['target_domain'],
         save_path=config['save_path']

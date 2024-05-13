@@ -14,7 +14,7 @@ class KeyPhraseGenerationPipeline(Text2TextGenerationPipeline):
     def __init__(self, model, keyphrase_sep_token=";", *args, **kwargs):
         super().__init__(
             model=AutoModelForSeq2SeqLM.from_pretrained('seq2seqlm'),
-            tokenizer=AutoTokenizer.from_pretrained('auto_tokenizer'),
+            tokenizer=AutoTokenizer.from_pretrained('tokenizer'),
             *args,
             **kwargs
         )

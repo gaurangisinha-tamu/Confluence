@@ -156,7 +156,7 @@ class Trainer:
                 average_val_recall = np.mean(val_recall)
                 average_val_ndcg = np.mean(val_ndcg)
             print(f'Saving model for epoch {epoch}')
-            model_path = config['save_path'] + '/models/' + f'Epoch{epoch}_model_state_dict.pth'
+            model_path = self.config['save_path'] + '/models/' + f'Epoch{epoch}_model_state_dict.pth'
 
             if not os.path.exists('/'.join(model_path.split('/')[:-1])):
                 os.makedirs('/'.join(model_path.split('/')[:-1]))
