@@ -9,7 +9,7 @@ LATENT_DIM = 200
 class BertWithCustomHead(nn.Module):
     def __init__(self, output_dim=200, fine_tune_last_n_layers=1, use_clip=True):
         super(BertWithCustomHead, self).__init__()
-        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        self.bert = BertModel.from_pretrained('bert_model')
         self.hidden_size = self.bert.config.hidden_size
         self.use_clip = use_clip
 
@@ -19,7 +19,7 @@ class BertWithCustomHead(nn.Module):
                 param.requires_grad = False
 
         if self.use_clip:
-            self.CLIPmodel = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
+            self.CLIPmodel = CLIPModel.from_pretrained('clip_model')
             self.hidden_size += self.CLIPmodel.config.text_config.hidden_size
 
         self.feed_forward = nn.Sequential(

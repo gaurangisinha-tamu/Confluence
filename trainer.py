@@ -12,7 +12,7 @@ class Trainer:
         self.config = config
         self.model = model
         self.loss_function = nn.BCEWithLogitsLoss()
-        self.optimizer = AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-5)
+        self.optimizer = AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=config['learning_rate'])
 
     def __dcg_at_k(self, r, k, method=1):
         r = np.asfarray(r)[:k]

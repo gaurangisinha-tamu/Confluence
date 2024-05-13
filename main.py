@@ -1,3 +1,5 @@
+import argparse
+
 from config import config
 import os
 import torch
@@ -10,7 +12,16 @@ from preprocessor import DataGeneration
 
 from trainer import Trainer
 
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--use_mf", type=bool, default=False, help="use MF signals or not")
+    parser.add_argument("--use_clip", type=bool, default=False, help="use CLIP encoder or not")
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
+    args = parse_args()
     config['save_path'] = config['save_path'] + '/' + config['source_domain'] + '_' + config['target_domain']
     if not os.path.exists(config['save_path']):
         os.makedirs(config['save_path'])
@@ -28,16 +39,18 @@ if __name__ == '__main__':
     dataloader = DataSetLoader(config)
     train_dl, val_dl, test_dl = dataloader.load_data()
 
-    mf = MF(config['save_path'] + '/' + config['source_domain'] + '_train_user_item_ratings.csv')
-    mf_model = mf.train()
-    mf.get_latent_factors(mf_model)
-    user_embeddings_dict, item_embeddings_dict = mf.load_embeddings(
-        config['save_path'] + '/' + config['source_domain'] + '_als_user_embeddings.pkl'), mf.load_embeddings(
-        config['save_path'] + '/' + config['source_domain'] + '_als_item_embeddings.pkl')
+    user_embeddings_dict, item_embeddings_dict = None, None
+    if args.use_mf:
+        mf = MF(config, config['save_path'] + '/' + config['source_domain'] + '_train_user_item_ratings.csv')
+        mf_model = mf.train()
+        mf.get_latent_factors(mf_model)
+        user_embeddings_dict, item_embeddings_dict = mf.load_embeddings(
+            config['save_path'] + '/' + config['source_domain'] + '_als_user_embeddings.pkl'), mf.load_embeddings(
+            config['save_path'] + '/' + config['source_domain'] + '_als_item_embeddings.pkl')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = TwoTowerModel(user_embeddings_dict=user_embeddings_dict, item_embeddings_dict=item_embeddings_dict,
-                          output_dim=200, use_clip=False).to(device)
+                          output_dim=200, use_clip=args.use_clip).to(device)
 
     train_user_item_ratings_df = pd.read_csv(
         f"{config['save_path']}/{config['source_domain']}_train_user_item_ratings.csv")

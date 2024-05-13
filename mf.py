@@ -1,13 +1,14 @@
+import pickle
 from implicit.als import AlternatingLeastSquares
 from scipy.sparse import csr_matrix
 import pandas as pd
 import numpy as np
-import pickle5 as pickle
 
 
 class MF:
 
-    def __init__(self, path):
+    def __init__(self, config, path):
+        self.config = config
         self.path = path
         self.user_id_map = None
         self.item_id_map = None
@@ -46,9 +47,9 @@ class MF:
         user_embeddings_dict, item_embeddings_dict = self.get_embeddings_map(self.user_id_map, model.user_factors), self.get_embeddings_map(self.item_id_map,
                                                                                                       model.item_factors)
         self.save_embeddings(user_embeddings_dict,
-                           config['save_path'] + '/' + config['source_domain'] + '_als_user_embeddings.pkl')
+                           self.config['save_path'] + '/' + self.config['source_domain'] + '_als_user_embeddings.pkl')
         self.save_embeddings(item_embeddings_dict,
-                           config['save_path'] + '/' + config['source_domain'] + '_als_item_embeddings.pkl')
+                           self.config['save_path'] + '/' + self.config['source_domain'] + '_als_item_embeddings.pkl')
 
     def save_embeddings(self, embeddings_dict, file_name):
         with open(file_name, 'wb') as file:

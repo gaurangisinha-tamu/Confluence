@@ -13,8 +13,8 @@ from sklearn.model_selection import train_test_split
 class KeyPhraseGenerationPipeline(Text2TextGenerationPipeline):
     def __init__(self, model, keyphrase_sep_token=";", *args, **kwargs):
         super().__init__(
-            model=AutoModelForSeq2SeqLM.from_pretrained(model),
-            tokenizer=AutoTokenizer.from_pretrained(model),
+            model=AutoModelForSeq2SeqLM.from_pretrained('seq2seqlm'),
+            tokenizer=AutoTokenizer.from_pretrained('auto_tokenizer'),
             *args,
             **kwargs
         )
@@ -29,8 +29,9 @@ class KeyPhraseGenerationPipeline(Text2TextGenerationPipeline):
 
 
 class DataGeneration:
-    def __init__(self, source_domain_name, target_domain_name, save_path, train_distribution_coeff=4,
+    def __init__(self, config, source_domain_name, target_domain_name, save_path, train_distribution_coeff=4,
                  test_distribution_coeff=4, model_name="ml6team/keyphrase-generation-t5-small-inspec"):
+        self.config = config
         self.source_domain_name = source_domain_name
         self.target_domain_name = target_domain_name
         self.save_path = save_path
@@ -40,23 +41,17 @@ class DataGeneration:
         self.generator = KeyPhraseGenerationPipeline(model=model_name)
 
     def load_and_filter_data(self):
-        source_reviews = load_dataset("McAuley-Lab/Amazon-Reviews-2023", f"raw_review_{self.source_domain_name}",
-                                      trust_remote_code=True)
-        source_meta = load_dataset("McAuley-Lab/Amazon-Reviews-2023", f"raw_meta_{self.source_domain_name}",
-                                   trust_remote_code=True)
-        target_reviews = load_dataset("McAuley-Lab/Amazon-Reviews-2023", f"raw_review_{self.target_domain_name}",
-                                      trust_remote_code=True)
-        target_meta = load_dataset("McAuley-Lab/Amazon-Reviews-2023", f"raw_meta_{self.target_domain_name}",
-                                   trust_remote_code=True)
-
-        common_users = list(
-            set(source_reviews["full"][:]['user_id']).intersection(set(target_reviews["full"][:]['user_id'])))
+        source_reviews = pd.read_json(self.config['data_path'] + f"/{self.source_domain_name}.jsonl", lines=True)
+        source_meta = pd.read_json(self.config['data_path'] + f"/meta_{self.source_domain_name}.jsonl", lines=True)
+        target_reviews = pd.read_json(self.config['data_path'] + f"/{self.target_domain_name}.jsonl", lines=True)
+        target_meta = pd.read_json(self.config['data_path'] + f"/meta_{self.target_domain_name}.jsonl", lines=True)
+        common_users = list(set(source_reviews['user_id']).intersection(set(target_reviews['user_id'])))
 
         # Create dataframes
-        source_reviews_df = source_reviews["full"].to_pandas()
-        self.source_meta_df = source_meta["full"].to_pandas()
-        target_reviews_df = target_reviews["full"].to_pandas()
-        self.target_meta_df = target_meta["full"].to_pandas()
+        source_reviews_df = source_reviews
+        self.source_meta_df = source_meta
+        target_reviews_df = target_reviews
+        self.target_meta_df = target_meta
 
         # Filter dataframe
         common_users_source_df = source_reviews_df[source_reviews_df['user_id'].isin(common_users)]
