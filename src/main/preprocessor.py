@@ -169,14 +169,14 @@ class DataGeneration:
                                                                      details):
                 keyphrases = []
                 keyphrases.append(title)
-                if feature.size:
+                if len(feature):
                     keyphrases.append(feature[0])
-                if description.size:
+                if len(description):
                     keyphrases.append(description[0])
-                if category.size:
+                if len(category):
                     keyphrases.append(category[0])
                 if detail:
-                    keyphrases.append(','.join(detail[1:-1].split(', ')))
+                    keyphrases.append(', '.join([f"{key}{value}" for key, value in detail.items()]))
                 item_keyphrases.update([','.join(keyphrases)])
 
             all_items_keyphrases.append(list(item_keyphrases))

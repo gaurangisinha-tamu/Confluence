@@ -7,9 +7,9 @@
 #SBATCH --mem=25600M               #Request 2560MB (2.5GB) per node
 #SBATCH --cpus-per-task=4
 #SBATCH --gres=gpu:1
-#SBATCH --output=nohups/exp-1.%j    #Send stdout/err to "Example1Out.[jobID]"
+#SBATCH --output=exp-1.%j    #Send stdout/err to "Example1Out.[jobID]"
 
 cd /scratch/user/arunim_samudra/ISR_Project
 source env/bin/activate
-python3 main.py --use_mf=False --use_clip=False
+python3 src/main/main.py --use_mf=False --use_clip=False
 deactivate

@@ -21,7 +21,6 @@ def parse_args():
 
 
 if __name__ == '__main__':
-    print("started main")
     args = parse_args()
     config['save_path'] = config['source_domain'] + '_' + config['target_domain']
     if not os.path.exists(config['save_path']):

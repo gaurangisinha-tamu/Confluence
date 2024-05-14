@@ -1,6 +1,6 @@
 config = {
     'save_path': '',
-    'data_path': 'data',
+    'data_path': '/Users/arunimsamudra/Documents/Confluence/data',
     'source_domain': 'All_Beauty',
     'target_domain': 'Amazon_Fashion',
     'batch_size': 16,
