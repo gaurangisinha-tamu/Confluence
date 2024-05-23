@@ -1,4 +1,4 @@
-import tqdm
+from tqdm import tqdm
 from transformers import AdamW
 import torch
 import torch.nn as nn
@@ -46,14 +46,12 @@ class Trainer:
                 user_attention_mask = batch[2]['attention_mask'].to(device)
                 item_input_ids = batch[3]['input_ids'].squeeze(1).to(device)
                 item_attention_mask = batch[3]['attention_mask'].to(device)
-                ratings = batch[4].to(device)
+                ratings = batch[4].to(device).float()
                 image = batch[6].to(device)
                 # true_ratings = batch[5].to(device)
 
-                # scores = model(user_ids_raw, item_ids_raw, user_input_ids, user_attention_mask, item_input_ids, item_attention_mask, True)
                 scores = self.model(user_ids_raw, item_ids_raw, user_input_ids, user_attention_mask, item_input_ids,
                                     item_attention_mask, image, True)
-
                 loss = self.loss_function(scores, ratings)
 
                 loss.backward()
@@ -110,10 +108,9 @@ class Trainer:
                     user_attention_mask = batch[2]['attention_mask'].to(device)
                     item_input_ids = batch[3]['input_ids'].squeeze(1).to(device)
                     item_attention_mask = batch[3]['attention_mask'].to(device)
-                    ratings = batch[4].to(device)
+                    ratings = batch[4].to(device).float()
                     image = batch[6].to(device)
 
-                    # scores = model(user_ids_raw, item_ids_raw, user_input_ids, user_attention_mask, item_input_ids, item_attention_mask, False)
                     scores = self.model(user_ids_raw, item_ids_raw, user_input_ids, user_attention_mask, item_input_ids,
                                         item_attention_mask, image, False)
                     loss = self.loss_function(scores, ratings)
@@ -185,10 +182,9 @@ class Trainer:
                 user_attention_mask = batch[2]['attention_mask'].to(device)
                 item_input_ids = batch[3]['input_ids'].squeeze(1).to(device)
                 item_attention_mask = batch[3]['attention_mask'].to(device)
-                ratings = batch[4].to(device)
+                ratings = batch[4].to(device).float()
                 image = batch[6].to(device)
 
-                # scores = model(user_ids_raw, item_ids_raw, user_input_ids, user_attention_mask, item_input_ids, item_attention_mask, False)
                 scores = self.model(user_ids_raw, item_ids_raw, user_input_ids, user_attention_mask, item_input_ids,
                                     item_attention_mask, image, False)
                 loss = self.loss_function(scores, ratings)

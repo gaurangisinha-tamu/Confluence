@@ -53,7 +53,7 @@ class ReviewsDataset(Dataset):
         self.tokenizer = tokenizer
         self.CLIPmodel = CLIPModel.from_pretrained('clip_model')
         self.CLIPprocessor = CLIPProcessor.from_pretrained('clip_processor')
-        self.CLIPhidden_size = self.CLIPmodel.self.config.text_self.config.hidden_size
+        self.CLIPhidden_size = self.CLIPmodel.config.text_config.hidden_size
 
     def __len__(self):
         return len(self.ratings)

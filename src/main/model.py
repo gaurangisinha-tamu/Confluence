@@ -35,7 +35,7 @@ class BertWithCustomHead(nn.Module):
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
         pooled_output = outputs.pooler_output
 
-        if self.use_clip and image_embedding:
+        if self.use_clip:
             pooled_output = torch.cat((pooled_output, image_embedding.squeeze(dim=1)), dim=1)
         custom_output = self.feed_forward(pooled_output)
         return custom_output
@@ -55,7 +55,7 @@ class TwoTowerModel(nn.Module):
                                          item_embeddings_dict.items()}
 
     def forward(self, user_raw_ids, item_raw_ids, user_input_ids, user_attention_mask, item_input_ids,
-                item_attention_mask, train=True, image_embedding=None):
+                item_attention_mask, image_embedding=None, train=True):
         user_repr = self.user_tower(user_input_ids, user_attention_mask, image_embedding)
         item_repr = self.item_tower(item_input_ids, item_attention_mask, image_embedding)
 
