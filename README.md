@@ -15,3 +15,5 @@ It contains the code for preprocessing, negative sampling, user and item profile
         2. `pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html`
 3. mkdir directory
 4. run main.py `python3 main.py --use_mf=False --use_clip=False`
+
+Project website: https://gaurangisinha-tamu.github.io/ISR-Project/
